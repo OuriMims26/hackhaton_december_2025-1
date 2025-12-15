@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUpRight, Activity, Bell, Globe, Linkedin } from "lucide-react"
+import { RecentActivity } from "@/components/dashboard/recent-activity"
+import { ActivityDistribution } from "@/components/dashboard/activity-distribution"
 
 export default function DashboardPage() {
     return (
@@ -45,24 +47,16 @@ export default function DashboardPage() {
                 />
             </div>
 
-            {/* Charts Placeholder */}
+            {/* Charts & Activity */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4 bg-card/50">
-                    <CardHeader>
-                        <CardTitle>Activity Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground">
-                        Chart: Distribution (Needs Recharts)
-                    </CardContent>
-                </Card>
-                <Card className="col-span-3 bg-card/50">
-                    <CardHeader>
-                        <CardTitle>Top Warnings</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground">
-                        List: Warnings Progress
-                    </CardContent>
-                </Card>
+                {/* Recent Activity Widget */}
+                <div className="col-span-4">
+                    <RecentActivity />
+                </div>
+
+                <div className="col-span-3 bg-card/50 rounded-xl overflow-hidden border border-white/20">
+                    <ActivityDistribution />
+                </div>
             </div>
         </div>
     )
