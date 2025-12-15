@@ -3,11 +3,12 @@ import Link from "next/link";
 interface LogoProps {
     className?: string;
     iconOnly?: boolean;
+    href?: string;
 }
 
-export function Logo({ className = "", iconOnly = false }: LogoProps) {
+export function Logo({ className = "", iconOnly = false, href = "/" }: LogoProps) {
     return (
-        <Link href="/" className={`flex items-center gap-2 ${className}`}>
+        <Link href={href} className={`flex items-center gap-2 ${className}`}>
             <svg
                 width="32"
                 height="32"
@@ -58,3 +59,4 @@ export function Logo({ className = "", iconOnly = false }: LogoProps) {
         </Link>
     );
 }
+

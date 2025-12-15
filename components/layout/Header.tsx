@@ -16,9 +16,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function Header() {
     return (
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-6 backdrop-blur-md transition-all">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between bg-transparent px-6 backdrop-blur-md transition-all">
             <div className="flex items-center gap-4">
-                <SidebarTrigger className="-ml-2" />
+                <SidebarTrigger className="-ml-2 hover:bg-[#F1C086]/10 hover:text-[#F1C086]" />
                 <div className="relative hidden md:block w-96">
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input

@@ -9,13 +9,10 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarRail,
-    SidebarFooter,
 } from "@/components/ui/sidebar"
 import { Logo } from "@/components/ui/logo"
 
@@ -48,22 +45,20 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon">
-            <SidebarHeader className="h-16 flex items-center justify-center border-b border-sidebar-border">
-                <div className="w-full flex items-center gap-2 px-2 overflow-hidden">
-                    <Logo iconOnly={false} className="transition-all" />
-                </div>
-            </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Menu</SidebarGroupLabel>
+                <SidebarGroup className="space-y-4">
+                    <div className="h-16 flex items-center justify-left">
+                        <Logo iconOnly={false} className="transition-all" href="/dashboard" />
+                    </div>
                     <SidebarGroupContent>
-                        <SidebarMenu>
+                        <SidebarMenu className="space-y-2">
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         asChild
                                         isActive={pathname === item.url || pathname.startsWith(item.url + "/")}
                                         tooltip={item.title}
+                                        className="data-[active=true]:bg-gradient-to-r data-[active=true]:from-[#F1C086] data-[active=true]:to-[#F6B88C] data-[active=true]:text-[#0E0E10] hover:bg-[#F1C086]/10 hover:text-[#F1C086] transition-all duration-200 group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:[&>span]:hidden group-data-[collapsible=icon]:!gap-0"
                                     >
                                         <Link href={item.url}>
                                             <item.icon className="!w-5 !h-5" />
@@ -76,13 +71,6 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t border-sidebar-border p-4">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground truncate">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Systems Normal</span>
-                </div>
-            </SidebarFooter>
-            <SidebarRail />
         </Sidebar>
     )
 }

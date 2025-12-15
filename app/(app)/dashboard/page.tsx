@@ -10,9 +10,6 @@ export default function DashboardPage() {
                 <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
                     Dashboard
                 </h1>
-                <div className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-sm font-medium border border-emerald-500/20">
-                    Last updated: Just now
-                </div>
             </div>
 
             {/* KPI Cards */}
@@ -54,7 +51,7 @@ export default function DashboardPage() {
                     <RecentActivity />
                 </div>
 
-                <div className="col-span-3 bg-card/50 rounded-xl overflow-hidden border border-white/20">
+                <div className="col-span-3">
                     <ActivityDistribution />
                 </div>
             </div>

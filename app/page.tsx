@@ -34,7 +34,7 @@ export default function LandingPage() {
       <main className="flex-1">
 
         {/* B. HERO SECTION */}
-        <section className="relative pt-24 pb-12 text-center px-4 max-w-5xl mx-auto">
+        <section className="relative pt-24 pb-12 text-center px-4 max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-8 leading-tight">
             Bienvenue sur votre plateforme <br />
             <span className="bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3] bg-clip-text text-transparent">
@@ -59,7 +59,7 @@ export default function LandingPage() {
         </div>
 
         {/* Features Grid */}
-        <div className="px-6 w-full max-w-7xl mx-auto z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-20">
+        <div className="px-6 w-full max-w-7xl mx-auto z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-32">
           <FeatureCard
             icon={<BarChart3 className="w-6 h-6 text-[#F1C086]" />}
             title="Portfolio Analytics"
@@ -67,16 +67,16 @@ export default function LandingPage() {
             href="#portfolio-analytics"
           />
           <FeatureCard
-            icon={<Globe className="w-6 h-6 text-[#8B8CFF]" />}
-            title="Website Monitoring"
-            description="Detect changes in pricing, teams, and landing pages."
-            href="#website-monitoring"
-          />
-          <FeatureCard
             icon={<Bell className="w-6 h-6 text-emerald-400" />}
             title="LinkedIn Tracking"
             description="Monitor founder activity and hiring announcements."
             href="#linkedin-tracking"
+          />
+          <FeatureCard
+            icon={<Globe className="w-6 h-6 text-[#8B8CFF]" />}
+            title="Website Monitoring"
+            description="Detect changes in pricing, teams, and landing pages."
+            href="#website-monitoring"
           />
           <FeatureCard
             icon={<ShieldAlert className="w-6 h-6 text-amber-400" />}
