@@ -11,9 +11,10 @@ import { supabase } from "@/lib/supabase/client"
 interface Company {
     id: string
     name: string
-    industry: string
+    sector: string
     stage: string
-    website: string
+    website_url?: string
+    linkedin_company_url?: string
     status: 'active' | 'watch' | 'warning'
     last_activity: string
 }
@@ -21,6 +22,8 @@ interface Company {
 export default function PortfolioPage() {
     const [companies, setCompanies] = useState<Company[]>([])
     const [loading, setLoading] = useState(true)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'watch' | 'warning'>('all')
 
     useEffect(() => {
         async function fetchCompanies() {
@@ -32,12 +35,11 @@ export default function PortfolioPage() {
                 console.error('Error fetching companies:', error)
             } else {
                 // Map database fields to UI fields if necessary, or ensure DB columns match
-                // Assuming DB has snake_case 'last_activity' which matches interface above
-                // If DB uses camelCase, we might need mapping. 
-                // For now, type assertion or mapping:
                 const mappedData = (data || []).map(item => ({
                     ...item,
-                    lastActivity: item.last_activity || 'Just now', // Ensure fallback
+                    website_url: item.website_url,
+                    linkedin_company_url: item.linkedin_company_url,
+                    sector: item.sector,
                     status: item.status || 'active'
                 }))
                 setCompanies(mappedData as any)
@@ -47,6 +49,13 @@ export default function PortfolioPage() {
 
         fetchCompanies()
     }, [])
+
+    const filteredCompanies = companies.filter(company => {
+        const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (company.sector && company.sector.toLowerCase().includes(searchQuery.toLowerCase()))
+        const matchesStatus = statusFilter === 'all' || company.status === statusFilter
+        return matchesSearch && matchesStatus
+    })
 
     return (
         <div className="flex flex-col gap-6">
@@ -66,16 +75,43 @@ export default function PortfolioPage() {
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search companies..."
-                        className="pl-8 bg-background/50 border-white/5"
+                        className="pl-8 bg-background/50 border-white/5 focus:border-[#F1C086]/50 transition-colors"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-                    <Button variant="secondary" size="sm" className="bg-[#8B8CFF]/10 text-[#8B8CFF] hover:bg-[#8B8CFF]/20 border border-[#8B8CFF]/20">All</Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">High Activity</Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">Warnings</Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">Inactive</Button>
-                    <Button variant="outline" size="icon" className="ml-auto md:ml-2">
-                        <Filter className="h-4 w-4" />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setStatusFilter('all')}
+                        className={`transition-all ${statusFilter === 'all' ? 'bg-white/10 text-white' : 'text-muted-foreground hover:text-white'}`}
+                    >
+                        All
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setStatusFilter('watch')}
+                        className={`transition-all ${statusFilter === 'watch' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 'text-muted-foreground hover:text-blue-500'}`}
+                    >
+                        Watch
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setStatusFilter('warning')}
+                        className={`transition-all ${statusFilter === 'warning' ? 'bg-[#F1C086]/10 text-[#F1C086] border border-[#F1C086]/20' : 'text-muted-foreground hover:text-[#F1C086]'}`}
+                    >
+                        Warnings
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setStatusFilter('active')}
+                        className={`transition-all ${statusFilter === 'active' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'text-muted-foreground hover:text-emerald-500'}`}
+                    >
+                        Active
                     </Button>
                 </div>
             </div>
@@ -86,16 +122,15 @@ export default function PortfolioPage() {
                     <div className="col-span-full flex items-center justify-center p-12 text-muted-foreground">
                         Loading companies...
                     </div>
-                ) : companies.length === 0 ? (
+                ) : filteredCompanies.length === 0 ? (
                     <div className="col-span-full flex items-center justify-center p-12 text-muted-foreground">
-                        No companies found or database connection error.
+                        No companies found.
                     </div>
                 ) : (
-                    companies.map((company) => (
+                    filteredCompanies.map((company) => (
                         <CompanyCard
                             key={company.id}
                             {...company}
-                            lastActivity={company.last_activity || 'Unknown'} // Handle mapping
                         />
                     ))
                 )}

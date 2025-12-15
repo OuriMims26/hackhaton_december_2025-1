@@ -12,9 +12,10 @@ import { Badge } from "@/components/ui/badge"
 interface Company {
     id: string
     name: string
-    industry: string
+    website_url: string
+    linkedin_company_url?: string
+    sector: string
     stage: string
-    website: string
     status: 'active' | 'watch' | 'warning'
     description?: string
     logo_url?: string
@@ -25,7 +26,7 @@ interface DetectedChange {
     change_type: 'TEAM' | 'PRICING' | 'PRODUCT' | 'FUNDING' | 'OTHER'
     severity: number
     narrative: string
-    created_at: string
+    detected_at: string
     source?: 'linkedin' | 'website' | 'news'
 }
 
@@ -36,7 +37,7 @@ export default function CompanyDetailsPage() {
     const [company, setCompany] = useState<Company | null>(null)
     const [changes, setChanges] = useState<DetectedChange[]>([])
     const [loading, setLoading] = useState(true)
-    const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d')
+    const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('7d')
 
     useEffect(() => {
         async function fetchData() {
@@ -60,10 +61,9 @@ export default function CompanyDetailsPage() {
                 .from('detected_changes')
                 .select('*')
                 .eq('company_id', id)
-                .order('created_at', { ascending: false })
+                .order('detected_at', { ascending: false })
                 .limit(20)
 
-            console.error("DEBUG: Fetching for ID:", id)
             if (changesError) {
                 console.error("Error fetching changes:", JSON.stringify(changesError, null, 2))
                 // Fallback: Check if no data is an option
@@ -110,18 +110,17 @@ export default function CompanyDetailsPage() {
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
                         <h1 className="text-3xl font-bold text-white">{company.name}</h1>
-                        <Badge variant={company.status === 'warning' ? 'destructive' : 'outline'} className="capitalize">
+                        <Badge className={`capitalize ${company.status === 'warning' ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border-amber-500/20' :
+                                company.status === 'watch' ? 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20' :
+                                    'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20'
+                            }`}>
                             {company.status}
                         </Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-400 pl-8">
-                        <span>{company.industry}</span>
-                        <span>•</span>
                         <span>{company.stage}</span>
                         <span>•</span>
-                        <a href={company.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:text-[#F1C086] transition-colors">
-                            {company.website} <ExternalLink className="w-3 h-3" />
-                        </a>
+                        <span>{company.sector}</span>
                     </div>
                 </div>
                 <div className="flex gap-2">
@@ -169,39 +168,48 @@ export default function CompanyDetailsPage() {
                 <div className="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-6">
                     <h3 className="text-gray-400 text-sm font-medium mb-6">Live Monitoring</h3>
                     <div className="space-y-6">
-                        <div className="flex items-center justify-between">
+                        {/* LinkedIn */}
+                        <div
+                            className="flex items-center justify-between p-3 rounded-xl hover:bg-[#0077b5]/10 transition-all cursor-pointer group"
+                            onClick={() => company.linkedin_company_url && window.open(company.linkedin_company_url, '_blank')}
+                        >
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-[#0077b5]/10 flex items-center justify-center border border-[#0077b5]/20">
+                                <div className="w-10 h-10 rounded-full bg-[#0077b5]/10 flex items-center justify-center border border-[#0077b5]/20 group-hover:border-[#0077b5]/50 transition-colors">
                                     <Linkedin className="w-5 h-5 text-[#0077b5]" />
                                 </div>
                                 <div>
-                                    <div className="text-white font-medium">LinkedIn</div>
+                                    <div className="text-white font-medium group-hover:text-[#0077b5] transition-colors">LinkedIn</div>
                                     <div className="text-xs text-gray-500">Connected</div>
                                 </div>
                             </div>
                             <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        {/* Website */}
+                        <div
+                            className="flex items-center justify-between p-3 rounded-xl hover:bg-orange-500/10 transition-all cursor-pointer group"
+                            onClick={() => company.website_url && window.open(company.website_url, '_blank')}
+                        >
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/20 group-hover:border-orange-500/50 transition-colors">
                                     <Globe className="w-5 h-5 text-orange-500" />
                                 </div>
                                 <div>
-                                    <div className="text-white font-medium">Website</div>
+                                    <div className="text-white font-medium group-hover:text-orange-500 transition-colors">Website</div>
                                     <div className="text-xs text-gray-500">Active crawling</div>
                                 </div>
                             </div>
                             <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        {/* News (Non-clickable for now, but styled for consistency) */}
+                        <div className="flex items-center justify-between p-3 rounded-xl hover:bg-purple-500/10 transition-all group">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                                <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:border-purple-500/50 transition-colors">
                                     <AlertTriangle className="w-5 h-5 text-purple-500" />
                                 </div>
                                 <div>
-                                    <div className="text-white font-medium">News & PR</div>
+                                    <div className="text-white font-medium group-hover:text-purple-500 transition-colors">News & PR</div>
                                     <div className="text-xs text-gray-500">Scanning</div>
                                 </div>
                             </div>
@@ -227,7 +235,7 @@ export default function CompanyDetailsPage() {
                                 <div key={item.id} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
                                     <div className="flex justify-between items-start mb-2">
                                         <Badge variant="secondary" className="text-[10px] bg-[#0077b5]/10 text-[#0077b5]">TEAM</Badge>
-                                        <span className="text-xs text-gray-500">{new Date(item.created_at).toLocaleDateString()}</span>
+                                        <span className="text-xs text-gray-500">{new Date(item.detected_at).toLocaleDateString()}</span>
                                     </div>
                                     <p className="text-gray-300 text-sm">{item.narrative}</p>
                                 </div>
@@ -251,7 +259,7 @@ export default function CompanyDetailsPage() {
                             websiteActivities.slice(0, 3).map((item) => (
                                 <div key={item.id} className="relative pl-6">
                                     <div className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border-2 border-orange-500" />
-                                    <div className="text-xs text-gray-500 mb-1">{new Date(item.created_at).toLocaleDateString()}</div>
+                                    <div className="text-xs text-gray-500 mb-1">{new Date(item.detected_at).toLocaleDateString()}</div>
                                     <p className="text-gray-300 text-sm">{item.narrative}</p>
                                 </div>
                             ))
