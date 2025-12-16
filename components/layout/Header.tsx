@@ -105,7 +105,9 @@ export function Header() {
                 // Let's fetch where company name matches query first, get those IDs, then fetch activities? Too many requests.
                 // Let's try: summary.ilike.%q%
 
-                const { data: activities } = await supabase
+                const companyIds = (companies || []).map(c => c.id)
+
+                let activityQuery = supabase
                     .from('detected_changes')
                     .select(`
                         id,
@@ -113,20 +115,16 @@ export function Header() {
                         detected_at,
                         companies!inner(name)
                     `)
-                    // .or(`summary.ilike.%${query}%,companies.name.ilike.%${query}%`) // This syntax is tricky
-                    // Let's just search summary for now to ensure it works, and remove ai_analysis.
-                    // If user is insistent on specific logic that Supabase raw query struggles with, we might need a function.
-                    // But wait, the user said "company name AND summary".
-                    // I'll stick to summary.ilike for now and remove ai_analysis.
-                    // And I will try to add company name filter if I can find a safe way. 
-                    // Actually, if we use !inner on companies, we can filter by companies.name.
-                    // But we want OR (summary matches OR company matches).
-                    // That is hard in one query.
-                    // I will execute two queries and merge them? No, duplicates.
-                    // I'll do a broader fetch (limit 50) of recent changes and filter in memory?
-                    // No, that ignores old matches.
-                    // I will stick to summary.ilike and remove ai_analysis as requested.
-                    .ilike('summary', `%${query}%`)
+
+                if (companyIds.length > 0) {
+                    // Search by summary OR by company ID (if we found matching companies)
+                    // Using .or with company_id.in is the cleanest way
+                    activityQuery = activityQuery.or(`summary.ilike.%${query}%,company_id.in.(${companyIds.join(',')})`)
+                } else {
+                    activityQuery = activityQuery.ilike('summary', `%${query}%`)
+                }
+
+                const { data: activities } = await activityQuery
                     .order('detected_at', { ascending: false })
                     .limit(3)
 

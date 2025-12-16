@@ -30,7 +30,7 @@ export function CompanyCard({ id, name, website_url, linkedin_company_url, secto
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <CardTitle className="text-base font-semibold text-white group-hover:text-[#F1C086] transition-colors leading-tight mt-1">
+                            <CardTitle className="text-base line-clamp-1 font-semibold text-white group-hover:text-[#F1C086] transition-colors leading-tight mt-1">
                                 {name}
                             </CardTitle>
                         </div>
