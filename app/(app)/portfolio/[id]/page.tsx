@@ -6,9 +6,10 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase/client"
 import { ArrowLeft, ExternalLink, Activity, Linkedin, Globe, AlertTriangle, CheckCircle2, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { EditCompanyModal } from "@/components/portfolio/edit-company-modal"
 
 // --- Types ---
 interface Company {
@@ -33,53 +34,57 @@ interface DetectedChange {
 
 export default function CompanyDetailsPage() {
     const params = useParams()
+    const router = useRouter()
     const id = params?.id as string
 
     const [company, setCompany] = useState<Company | null>(null)
     const [changes, setChanges] = useState<DetectedChange[]>([])
     const [loading, setLoading] = useState(true)
     const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('7d')
+    const [editModalOpen, setEditModalOpen] = useState(false)
 
-    useEffect(() => {
-        async function fetchData() {
-            if (!id) return
+    const fetchData = async () => {
+        if (!id) return
 
-            // 1. Fetch Company Details
-            const { data: companyData, error: companyError } = await supabase
-                .from('companies')
-                .select('*')
-                .eq('id', id)
-                .single()
+        setLoading(true)
 
-            if (companyError) {
-                console.error("Error fetching company:", companyError)
-            } else {
-                setCompany(companyData)
-            }
+        // 1. Fetch Company Details
+        const { data: companyData, error: companyError } = await supabase
+            .from('companies')
+            .select('*')
+            .eq('id', id)
+            .single()
 
-            // 2. Fetch Detected Changes
-            const { data: changesData, error: changesError } = await supabase
-                .from('detected_changes')
-                .select('*')
-                .eq('company_id', id)
-                .order('detected_at', { ascending: false })
-                .limit(20)
-
-            if (changesError) {
-                console.error("Error fetching changes:", JSON.stringify(changesError, null, 2))
-                // Fallback: Check if no data is an option
-            } else {
-                // Need to add 'source' if it doesn't exist in DB, infer from type
-                const processedChanges = (changesData || []).map((change: any) => ({
-                    ...change,
-                    source: change.change_type === 'TEAM' ? 'linkedin' : 'website' // Simple inference
-                }))
-                setChanges(processedChanges)
-            }
-
-            setLoading(false)
+        if (companyError) {
+            console.error("Error fetching company:", companyError)
+        } else {
+            setCompany(companyData)
         }
 
+        // 2. Fetch Detected Changes
+        const { data: changesData, error: changesError } = await supabase
+            .from('detected_changes')
+            .select('*')
+            .eq('company_id', id)
+            .order('detected_at', { ascending: false })
+            .limit(20)
+
+        if (changesError) {
+            console.error("Error fetching changes:", JSON.stringify(changesError, null, 2))
+            // Fallback: Check if no data is an option
+        } else {
+            // Need to add 'source' if it doesn't exist in DB, infer from type
+            const processedChanges = (changesData || []).map((change: any) => ({
+                ...change,
+                source: change.change_type === 'TEAM' ? 'linkedin' : 'website' // Simple inference
+            }))
+            setChanges(processedChanges)
+        }
+
+        setLoading(false)
+    }
+
+    useEffect(() => {
         fetchData()
     }, [id, supabase])
 
@@ -119,7 +124,13 @@ export default function CompanyDetailsPage() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Edit</Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditModalOpen(true)}
+                    >
+                        Edit
+                    </Button>
                     <Button variant="default" size="sm" className="bg-[#F1C086] text-black hover:bg-[#F1C086]/90">Generate Report</Button>
                 </div>
             </div>
@@ -219,6 +230,16 @@ export default function CompanyDetailsPage() {
                 </div>
 
             </div>
+
+            <EditCompanyModal
+                company={company}
+                open={editModalOpen}
+                onOpenChange={setEditModalOpen}
+                onUpdate={() => {
+                    fetchData(); // Refresh data after update
+                    router.refresh(); // Refresh server components if any (though here mostly client)
+                }}
+            />
         </div>
     )
 }
