@@ -231,7 +231,7 @@ export function Header() {
                                                     onClick={() => {
                                                         setShowResults(false)
                                                         setSearchQuery('')
-                                                        router.push('/activities')
+                                                        router.push('/activities/' + a.id)
                                                     }}
                                                 >
                                                     <div className="flex items-center justify-between mb-0.5">
@@ -293,6 +293,6 @@ export function Header() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-        </header>
+        </header >
     )
 }

@@ -4,7 +4,25 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink, Globe, Linkedin, Calendar, Building2, AlertTriangle, AlertCircle, Info, CheckCircle } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
+
+
+function timeAgo(dateString: string) {
+    const date = new Date(dateString)
+    const now = new Date()
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+    let interval = seconds / 31536000
+    if (interval > 1) return Math.floor(interval) + " years ago"
+    interval = seconds / 2592000
+    if (interval > 1) return Math.floor(interval) + " months ago"
+    interval = seconds / 86400
+    if (interval > 1) return Math.floor(interval) + " days ago"
+    interval = seconds / 3600
+    if (interval > 1) return Math.floor(interval) + " hours ago"
+    interval = seconds / 60
+    if (interval > 1) return Math.floor(interval) + " minutes ago"
+    return Math.floor(seconds) + " seconds ago"
+}
 
 import { supabase } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -152,7 +170,7 @@ export default function ActivityDetailPage() {
                                         </Badge>
                                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                                             <Calendar className="w-3 h-3" />
-                                            {formatDistanceToNow(new Date(activity.detected_at), { addSuffix: true })}
+                                            {timeAgo(activity.detected_at)}
                                         </span>
                                     </div>
                                     <CardTitle className="text-2xl font-bold text-white">

@@ -233,6 +233,7 @@ export function ActivityFeed({ companyId, showHeader = true }: ActivityFeedProps
                                 filteredActivities.map((activity) => (
                                     <ActivityItem
                                         key={activity.id}
+                                        id={activity.id}
                                         source={activity.source}
                                         severity={activity.severity}
                                         company={activity.company}

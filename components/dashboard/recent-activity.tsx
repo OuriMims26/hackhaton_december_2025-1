@@ -34,6 +34,7 @@ export function RecentActivity() {
             let query = supabase
                 .from('detected_changes')
                 .select(`
+            id,
             summary,
             ai_analysis,
             severity,
@@ -56,6 +57,7 @@ export function RecentActivity() {
                     const companyName = (item.companies as any)?.name || 'Unknown'
 
                     return {
+                        id: item.id,
                         name: companyName,
                         change: new Date(item.detected_at).toLocaleDateString(),
                         narrative: item.summary,
@@ -141,6 +143,7 @@ export function RecentActivity() {
                         filteredCompanies.map((company: any, index) => (
                             <ActivityItem
                                 key={index}
+                                id={company.id}
                                 source={company.source}
                                 severity={company.severity}
                                 company={company.name}

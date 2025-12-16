@@ -1,6 +1,8 @@
 import { Globe, Linkedin, ShieldAlert } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface ActivityItemProps {
+    id: string
     source: string
     severity: number
     company: string
@@ -9,7 +11,9 @@ interface ActivityItemProps {
     time: string
 }
 
-export function ActivityItem({ source, severity, company, title, description, time }: ActivityItemProps) {
+export function ActivityItem({ id, source, severity, company, title, description, time }: ActivityItemProps) {
+    const router = useRouter()
+
     // Logic moved here as requested
     const isLinkedin = source === 'linkedin'
     // If source isn't exactly linkedin, we default to website icon
@@ -25,7 +29,10 @@ export function ActivityItem({ source, severity, company, title, description, ti
 
 
     return (
-        <div className="bg-[#1A1A1A] border border-white/20 rounded-xl p-4 hover:border-white/40 transition-all cursor-pointer relative">
+        <div
+            onClick={() => router.push(`/activities/${id}`)}
+            className="bg-[#1A1A1A] border border-white/20 rounded-xl p-4 hover:border-white/40 transition-all cursor-pointer relative"
+        >
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                     {icon}
