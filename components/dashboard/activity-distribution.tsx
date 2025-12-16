@@ -73,7 +73,7 @@ export function ActivityDistribution() {
                                     cy="50%"
                                     innerRadius={60}
                                     outerRadius={80}
-                                    paddingAngle={5}
+                                    paddingAngle={4}
                                     dataKey="value"
                                     stroke="none"
                                 >

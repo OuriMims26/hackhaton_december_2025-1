@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Globe, Linkedin, ShieldAlert } from "lucide-react"
+import { Globe, Linkedin } from "lucide-react"
 import Link from "next/link"
 
 interface CompanyCardProps {
@@ -12,37 +12,24 @@ interface CompanyCardProps {
     linkedin_company_url?: string
     sector: string
     stage: string
-    status: 'active' | 'watch' | 'warning'
+
 }
 
-export function CompanyCard({ id, name, website_url, linkedin_company_url, sector, stage, status }: CompanyCardProps) {
+export function CompanyCard({ id, name, website_url, linkedin_company_url, sector, stage }: Omit<CompanyCardProps, 'status'>) {
     return (
         <Link href={`/portfolio/${id}`}>
             <Card className="h-full bg-card/50 backdrop-blur border-white/5 hover:border-[#F1C086]/50 hover:shadow-[0_0_20px_rgba(139,140,255,0.1)] transition-all duration-300 group cursor-pointer relative overflow-hidden">
-                <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] uppercase font-medium tracking-wider border
-                    ${status === 'warning' ? 'bg-[#F1C086]/10 text-[#F1C086] border-[#F1C086]/20' :
-                        status === 'watch' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                            'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'}`}>
-                    {status}
-                </div>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold
-                    ${status === 'warning' ? 'bg-[#F1C086]/10 text-[#F1C086]' :
-                                status === 'watch' ? 'bg-blue-500/10 text-blue-500' :
-                                    'bg-emerald-500/10 text-emerald-500'}`}>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold bg-[#F1C086]/10 text-[#F1C086]">
                             {name.charAt(0)}
                         </div>
                         <div>
                             <CardTitle className="text-base font-semibold text-white group-hover:text-[#F1C086] transition-colors">
                                 {name}
                             </CardTitle>
-                            {/* <p className="text-xs text-muted-foreground">{sector || 'Unknown Sector'}</p> */}
                         </div>
                     </div>
-                    {status === 'warning' && (
-                        <ShieldAlert className="h-5 w-5 text-[#F1C086] animate-pulse" />
-                    )}
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-wrap gap-2 mb-4">

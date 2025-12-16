@@ -13,9 +13,9 @@ interface Company {
     name: string
     sector: string
     stage: string
+
     website_url?: string
     linkedin_company_url?: string
-    status: 'active' | 'watch' | 'warning'
     last_activity: string
 }
 
@@ -23,7 +23,7 @@ export default function PortfolioPage() {
     const [companies, setCompanies] = useState<Company[]>([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
-    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'watch' | 'warning'>('all')
+
 
     useEffect(() => {
         async function fetchCompanies() {
@@ -40,7 +40,6 @@ export default function PortfolioPage() {
                     website_url: item.website_url,
                     linkedin_company_url: item.linkedin_company_url,
                     sector: item.sector,
-                    status: item.status || 'active'
                 }))
                 setCompanies(mappedData as any)
             }
@@ -51,10 +50,8 @@ export default function PortfolioPage() {
     }, [])
 
     const filteredCompanies = companies.filter(company => {
-        const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        return company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (company.sector && company.sector.toLowerCase().includes(searchQuery.toLowerCase()))
-        const matchesStatus = statusFilter === 'all' || company.status === statusFilter
-        return matchesSearch && matchesStatus
     })
 
     return (
@@ -71,7 +68,7 @@ export default function PortfolioPage() {
 
             {/* Filters */}
             <div className="flex flex-col md:flex-row items-center gap-4 bg-card/30 p-4 rounded-xl border border-white/5">
-                <div className="relative w-full md:w-96">
+                <div className="relative w-full">
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search companies..."
@@ -79,40 +76,6 @@ export default function PortfolioPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                </div>
-                <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setStatusFilter('all')}
-                        className={`transition-all ${statusFilter === 'all' ? 'bg-white/10 text-white' : 'text-muted-foreground hover:text-white'}`}
-                    >
-                        All
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setStatusFilter('watch')}
-                        className={`transition-all ${statusFilter === 'watch' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 'text-muted-foreground hover:text-blue-500'}`}
-                    >
-                        Watch
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setStatusFilter('warning')}
-                        className={`transition-all ${statusFilter === 'warning' ? 'bg-[#F1C086]/10 text-[#F1C086] border border-[#F1C086]/20' : 'text-muted-foreground hover:text-[#F1C086]'}`}
-                    >
-                        Warnings
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setStatusFilter('active')}
-                        className={`transition-all ${statusFilter === 'active' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'text-muted-foreground hover:text-emerald-500'}`}
-                    >
-                        Active
-                    </Button>
                 </div>
             </div>
 

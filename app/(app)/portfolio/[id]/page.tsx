@@ -1,5 +1,7 @@
 "use client"
 
+import { ActivityFeed } from "@/components/dashboard/activity-feed"
+
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase/client"
 import { ArrowLeft, ExternalLink, Activity, Linkedin, Globe, AlertTriangle, CheckCircle2, MoreHorizontal } from "lucide-react"
@@ -16,7 +18,6 @@ interface Company {
     linkedin_company_url?: string
     sector: string
     stage: string
-    status: 'active' | 'watch' | 'warning'
     description?: string
     logo_url?: string
 }
@@ -110,12 +111,6 @@ export default function CompanyDetailsPage() {
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
                         <h1 className="text-3xl font-bold text-white">{company.name}</h1>
-                        <Badge className={`capitalize ${company.status === 'warning' ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border-amber-500/20' :
-                                company.status === 'watch' ? 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20' :
-                                    'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20'
-                            }`}>
-                            {company.status}
-                        </Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-400 pl-8">
                         <span>{company.stage}</span>
@@ -218,53 +213,9 @@ export default function CompanyDetailsPage() {
                     </div>
                 </div>
 
-                {/* Recent LinkedIn Posts (Span 2) */}
-                <div className="lg:col-span-2 bg-[#0E0E10] border border-white/10 rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-white font-semibold flex items-center gap-2">
-                            <Linkedin className="w-4 h-4 text-[#0077b5]" />
-                            Recent Activity
-                        </h3>
-                    </div>
-
-                    <div className="space-y-4">
-                        {linkedinActivities.length === 0 ? (
-                            <div className="text-gray-500 text-sm text-center py-8">No recent LinkedIn activity detected.</div>
-                        ) : (
-                            linkedinActivities.slice(0, 3).map((item) => (
-                                <div key={item.id} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <Badge variant="secondary" className="text-[10px] bg-[#0077b5]/10 text-[#0077b5]">TEAM</Badge>
-                                        <span className="text-xs text-gray-500">{new Date(item.detected_at).toLocaleDateString()}</span>
-                                    </div>
-                                    <p className="text-gray-300 text-sm">{item.narrative}</p>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-
-                {/* Website Changes (Span 1) */}
-                <div className="bg-[#0E0E10] border border-white/10 rounded-2xl p-6">
-                    <h3 className="text-white font-semibold flex items-center gap-2 mb-6">
-                        <Globe className="w-4 h-4 text-orange-500" />
-                        Website Updates
-                    </h3>
-                    <div className="space-y-6 relative">
-                        <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-white/10" />
-
-                        {websiteActivities.length === 0 ? (
-                            <div className="text-gray-500 text-sm py-8 text-center">No website changes detected.</div>
-                        ) : (
-                            websiteActivities.slice(0, 3).map((item) => (
-                                <div key={item.id} className="relative pl-6">
-                                    <div className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full bg-[#1A1A1A] border-2 border-orange-500" />
-                                    <div className="text-xs text-gray-500 mb-1">{new Date(item.detected_at).toLocaleDateString()}</div>
-                                    <p className="text-gray-300 text-sm">{item.narrative}</p>
-                                </div>
-                            ))
-                        )}
-                    </div>
+                {/* Unified Activity Feed (Span 3 - Full Width) */}
+                <div className="lg:col-span-3 bg-[#0E0E10] border border-white/10 rounded-2xl p-6 h-[800px]">
+                    <ActivityFeed companyId={id} showHeader={false} />
                 </div>
 
             </div>
