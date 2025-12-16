@@ -14,7 +14,43 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
+import { supabase } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+
 export function Header() {
+    const router = useRouter()
+    const [user, setUser] = useState<any>(null)
+    const [initials, setInitials] = useState("OM")
+
+    useEffect(() => {
+        async function getUser() {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                setUser(user)
+                // Derive initials
+                const fullName = user.user_metadata?.full_name
+                if (fullName) {
+                    const parts = fullName.split(' ')
+                    if (parts.length >= 2) {
+                        setInitials(`${parts[0][0]}${parts[1][0]}`.toUpperCase())
+                    } else if (parts.length === 1) {
+                        setInitials(parts[0].slice(0, 2).toUpperCase())
+                    }
+                } else if (user.email) {
+                    setInitials(user.email.slice(0, 2).toUpperCase())
+                }
+            }
+        }
+        getUser()
+    }, [])
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut()
+        router.push('/')
+        router.refresh()
+    }
+
     return (
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between bg-transparent px-6 backdrop-blur-md transition-all">
             <div className="flex items-center gap-4">
@@ -40,7 +76,7 @@ export function Header() {
                             <Avatar className="h-9 w-9">
                                 <AvatarImage src="/avatar-placeholder.png" alt="@user" />
                                 <AvatarFallback className="bg-gradient-to-br from-[#F1C086] to-[#F6B88C] text-[#0E0E10] font-bold">
-                                    OM
+                                    {initials}
                                 </AvatarFallback>
                             </Avatar>
                         </Button>
@@ -48,9 +84,11 @@ export function Header() {
                     <DropdownMenuContent className="w-56" align="end" forceMount>
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
-                                <p className="text-sm font-medium leading-none">Ouriel Mimoun</p>
+                                <p className="text-sm font-medium leading-none">
+                                    {user?.user_metadata?.full_name || 'User'}
+                                </p>
                                 <p className="text-xs leading-none text-muted-foreground">
-                                    ouriel@ourinvest.vc
+                                    {user?.email || ''}
                                 </p>
                             </div>
                         </DropdownMenuLabel>
@@ -58,7 +96,10 @@ export function Header() {
                         <DropdownMenuItem>Profile</DropdownMenuItem>
                         <DropdownMenuItem>Settings</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500 focus:text-red-500">
+                        <DropdownMenuItem
+                            className="text-red-500 focus:text-red-500 cursor-pointer"
+                            onClick={handleLogout}
+                        >
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>
