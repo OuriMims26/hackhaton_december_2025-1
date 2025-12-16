@@ -36,13 +36,13 @@ export default function LandingPage() {
         {/* B. HERO SECTION */}
         <section className="relative pt-24 pb-12 text-center px-4 max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-8 leading-tight">
-            Bienvenue sur votre plateforme <br />
+            Welcome to your platform <br />
             <span className="bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3] bg-clip-text text-transparent">
               VC Intelligence
             </span>
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12">
-            Monitorez votre portefeuille, détectez les signaux faibles et prenez des décisions éclairées grâce à notre technologie d'analyse en temps réel.
+            Monitor your portfolio, detect weak signals, and make informed decisions with our real-time analysis technology.
           </p>
         </section>
 
@@ -92,14 +92,14 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
               <Badge color="light" text="PORTFOLIO ANALYTICS" />
-              <h2 className="text-4xl font-bold tracking-tight">Suivez la performance de votre portefeuille</h2>
+              <h2 className="text-4xl font-bold tracking-tight">Track your portfolio performance</h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Une vue consolidée de tous vos investissements. Suivez les multiples, le TRI, et l'évolution de la valorisation en temps réel.
+                A consolidated view of all your investments. Track multiples, IRR, and valuation evolution in real-time.
               </p>
               <ul className="space-y-4 pt-4">
-                <ListItem darkText>Valorisation en temps réel</ListItem>
-                <ListItem darkText>Suivi des KPIs clés</ListItem>
-                <ListItem darkText>Rapports automatisés</ListItem>
+                <ListItem darkText>Real-time valuation</ListItem>
+                <ListItem darkText>Key KPI tracking</ListItem>
+                <ListItem darkText>Automated reporting</ListItem>
               </ul>
             </div>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-gray-100">
@@ -129,14 +129,14 @@ export default function LandingPage() {
             </div>
             <div className="space-y-6 order-1 lg:order-2">
               <Badge color="dark" text="LINKEDIN TRACKING" />
-              <h2 className="text-4xl font-bold tracking-tight">Ne manquez aucun signal sur LinkedIn</h2>
+              <h2 className="text-4xl font-bold tracking-tight">Don't miss any signal on LinkedIn</h2>
               <p className="text-lg text-gray-400 leading-relaxed">
-                Suivez l'activité des fondateurs et employés clés. Détectez les recrutements, les annonces produits et le sentiment du marché.
+                Track the activity of founders and key employees. Detect hiring, product announcements, and market sentiment.
               </p>
               <ul className="space-y-4 pt-4">
-                <ListItem>Monitoring des fondateurs</ListItem>
-                <ListItem>Détection des embauches</ListItem>
-                <ListItem>Analyse de sentiment</ListItem>
+                <ListItem>Founder monitoring</ListItem>
+                <ListItem>Hiring detection</ListItem>
+                <ListItem>Sentiment analysis</ListItem>
               </ul>
             </div>
           </div>
@@ -147,14 +147,14 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
               <Badge color="light" text="WEBSITE MONITORING" />
-              <h2 className="text-4xl font-bold tracking-tight">Détectez les pivots et changements produits</h2>
+              <h2 className="text-4xl font-bold tracking-tight">Detect pivots and product changes</h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Soyez alerté dès qu'une startup modifie son pricing, sa proposition de valeur ou ajoute de nouvelles pages à son site.
+                Get alerted as soon as a startup changes its pricing, value proposition, or adds new pages to its site.
               </p>
               <ul className="space-y-4 pt-4">
-                <ListItem darkText>Changements de pricing</ListItem>
-                <ListItem darkText>Nouveaux produits</ListItem>
-                <ListItem darkText>Modification de l'équipe</ListItem>
+                <ListItem darkText>Pricing changes</ListItem>
+                <ListItem darkText>New products</ListItem>
+                <ListItem darkText>Team modification</ListItem>
               </ul>
             </div>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-gray-100">
@@ -181,14 +181,14 @@ export default function LandingPage() {
             </div>
             <div className="space-y-6 order-1 lg:order-2">
               <Badge color="dark" text="SMART WARNINGS" />
-              <h2 className="text-4xl font-bold tracking-tight">Anticipez les risques avant qu'il ne soit trop tard</h2>
+              <h2 className="text-4xl font-bold tracking-tight">Anticipate risks before it's too late</h2>
               <p className="text-lg text-gray-400 leading-relaxed">
-                Nos algorithmes analysent des milliers de points de données pour identifier les signaux faibles et les risques potentiels.
+                Our algorithms analyze thousands of data points to identify weak signals and potential risks.
               </p>
               <ul className="space-y-4 pt-4">
-                <ListItem>Détection de churn</ListItem>
-                <ListItem>Conflits fondateurs</ListItem>
-                <ListItem>Problèmes de cashflow</ListItem>
+                <ListItem>Churn detection</ListItem>
+                <ListItem>Founder conflicts</ListItem>
+                <ListItem>Cashflow issues</ListItem>
               </ul>
             </div>
           </div>
@@ -198,9 +198,9 @@ export default function LandingPage() {
         <section className="py-24 relative overflow-hidden text-center">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0E0E10] to-[#1A1A1A] -z-10" />
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">
-            Prêt à transformer votre <br />
+            Ready to transform your <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3]">
-              intelligence d'investissement ?
+              investment intelligence?
             </span>
           </h2>
           <Link href="/login?mode=signup">
@@ -233,7 +233,7 @@ export default function LandingPage() {
                 Sign In
               </Link>
               <p className="text-white/60 text-sm max-w-xs">
-                La plateforme de référence pour les investisseurs VC et Business Angels modernes.
+                The reference platform for modern VC investors and Business Angels.
               </p>
             </div>
 
