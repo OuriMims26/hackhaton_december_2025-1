@@ -34,6 +34,7 @@ export function RecentActivity() {
             severity,
             change_type,
             detected_at,
+            source,
             companies (
                 name
             )
@@ -56,7 +57,7 @@ export function RecentActivity() {
                     // Let's assume: 
                     // 'TEAM', 'TRACTION' -> LinkedIn (often) or keep as website if unknown.
                     // For this demo, let's map 'TEAM' to linkedin.
-                    if (item.change_type === 'TEAM') filterType = 'linkedin'
+                    if (item.source === 'linkedin') filterType = 'linkedin'
 
                     return {
                         name: (item.companies as any)?.name || 'Unknown',

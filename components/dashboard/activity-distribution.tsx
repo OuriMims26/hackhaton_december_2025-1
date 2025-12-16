@@ -15,7 +15,7 @@ export function ActivityDistribution() {
             setLoading(true)
             const { data: changes, error } = await supabase
                 .from('detected_changes')
-                .select('change_type, severity')
+                .select('source, severity')
 
             if (error) {
                 console.error('Error fetching distribution:', error)
@@ -27,7 +27,8 @@ export function ActivityDistribution() {
                 changes?.forEach(change => {
                     if (change.severity >= 7) {
                         warningCount++
-                    } else if (change.change_type === 'TEAM') {
+                    }
+                    if (change.source === 'linkedin') {
                         linkedinCount++
                     } else {
                         websiteCount++
