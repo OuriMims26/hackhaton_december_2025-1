@@ -260,7 +260,7 @@ export function Header() {
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="relative h-9 w-9 rounded-full ring-2 ring-white/10">
+                        <Button variant="ghost" className="relative h-9 w-9 rounded-full ring-2 ring-white/10" suppressHydrationWarning>
                             <Avatar className="h-9 w-9">
                                 <AvatarImage src="/avatar-placeholder.png" alt="@user" />
                                 <AvatarFallback className="bg-gradient-to-br from-[#F1C086] to-[#F6B88C] text-[#0E0E10] font-bold">

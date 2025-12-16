@@ -16,6 +16,7 @@ interface Company {
 
     website_url?: string
     linkedin_company_url?: string
+    logo_url?: string
     last_activity: string
 }
 

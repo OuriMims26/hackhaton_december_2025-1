@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { Globe, Linkedin } from "lucide-react"
 import Link from "next/link"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 interface CompanyCardProps {
     id: string
     name: string
@@ -12,20 +14,23 @@ interface CompanyCardProps {
     linkedin_company_url?: string
     sector: string
     stage: string
-
+    logo_url?: string
 }
 
-export function CompanyCard({ id, name, website_url, linkedin_company_url, sector, stage }: Omit<CompanyCardProps, 'status'>) {
+export function CompanyCard({ id, name, website_url, linkedin_company_url, sector, stage, logo_url }: Omit<CompanyCardProps, 'status'>) {
     return (
         <Link href={`/portfolio/${id}`}>
             <Card className="h-full bg-card/50 backdrop-blur border-white/5 hover:border-[#F1C086]/50 hover:shadow-[0_0_20px_rgba(139,140,255,0.1)] transition-all duration-300 group cursor-pointer relative overflow-hidden">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold bg-[#F1C086]/10 text-[#F1C086]">
-                            {name.charAt(0)}
-                        </div>
+                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                    <div className="flex items-start gap-3">
+                        <Avatar className="w-12 h-12 rounded-lg border border-white/10 flex-shrink-0">
+                            <AvatarImage src={logo_url} className="object-cover" />
+                            <AvatarFallback className="rounded-lg bg-[#F1C086]/10 text-[#F1C086] text-lg font-bold">
+                                {name.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
                         <div>
-                            <CardTitle className="text-base font-semibold text-white group-hover:text-[#F1C086] transition-colors">
+                            <CardTitle className="text-base font-semibold text-white group-hover:text-[#F1C086] transition-colors leading-tight mt-1">
                                 {name}
                             </CardTitle>
                         </div>
