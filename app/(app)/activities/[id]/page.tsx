@@ -44,6 +44,7 @@ interface Activity {
     id: string
     change_type: string
     summary: string
+    source?: string
     ai_analysis?: string | null
     severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
     detected_at: string
@@ -63,7 +64,6 @@ export default function ActivityDetailPage() {
                 if (!params.id) return
 
                 // Fetch activity with company details
-                // Note: We need to make sure we get the company ID if we want to link to it
                 const { data, error } = await supabase
                     .from('detected_changes')
                     .select(`
@@ -127,6 +127,21 @@ export default function ActivityDetailPage() {
         }
     }
 
+    const getSourceDetails = (source?: string) => {
+        if (source === 'linkedin') {
+            return {
+                icon: <Linkedin className="w-3.5 h-3.5 text-[#0077b5]" />,
+                label: 'LinkedIn',
+                style: 'bg-[#0077b5]/10 border-[#0077b5]/20 text-[#0077b5]'
+            }
+        }
+        return {
+            icon: <Globe className="w-3.5 h-3.5 text-emerald-500" />,
+            label: 'Website',
+            style: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex-1 space-y-6 p-8 max-w-7xl mx-auto w-full animate-pulse">
@@ -158,9 +173,10 @@ export default function ActivityDetailPage() {
     }
 
     const sev = getSeverityDetails(activity.severity)
+    const sourceDetails = getSourceDetails(activity.source)
 
     return (
-        <div className="flex-1 p-6 md:p-8 max-w-[1600px] mx-auto w-full space-y-4 animate-in fade-in duration-500">
+        <div className="flex-1 px-6 md:px-8 pb-8 pt-0 max-w-[1600px] mx-auto w-full space-y-4 animate-in fade-in duration-500">
             {/* Navigation & Header */}
             <div className="space-y-1">
                 <Button
@@ -173,138 +189,177 @@ export default function ActivityDetailPage() {
                     Back to Feed
                 </Button>
 
-                <div className="w-full p-8 ">
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wider flex items-center gap-2 border ${sev.bg} ${sev.color} ${sev.border}`}>
-                                {sev.icon}
-                                {activity.severity} SEVERITY
+                <div className="w-full border-white/5 shadow-2xl">
+                    <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
+                        {/* Title & Metadata (Left Side) */}
+                        <div className="space-y-4 flex-1">
+                            <div className="flex items-center gap-3">
+                                {/* Severity Badge Removed */}
+                                <div className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wider flex items-center gap-2 border ${sourceDetails.style}`}>
+                                    {sourceDetails.icon}
+                                    {sourceDetails.label.toUpperCase()}
+                                </div>
+                                <span className="text-muted-foreground text-sm flex items-center gap-1.5 ml-1">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    {timeAgo(activity.detected_at)}
+                                </span>
                             </div>
-                            <span className="text-muted-foreground text-sm flex items-center gap-1.5">
-                                <Calendar className="w-3.5 h-3.5" />
-                                {timeAgo(activity.detected_at)}
-                            </span>
+                            <h1 className="text-3xl md:text-5xl font-extrabold text-[#F1C086] leading-tight drop-shadow-sm">
+                                {activity.summary}
+                            </h1>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-extrabold text-[#F1C086] leading-tight drop-shadow-sm">
-                            {activity.summary}
-                        </h1>
+
+                        {/* Company Header Block (Right Side) */}
+                        <Link
+                            href={activity.companies?.id ? `/portfolio/${activity.companies.id}` : '#'}
+                            className="group flex items-center gap-4 shrink-0 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#F1C086]/30 transition-all shadow-lg hover:shadow-[#F1C086]/10"
+                        >
+                            <Avatar className="h-16 w-16 border-2 border-[#F1C086]/20 bg-[#1A1A1A] group-hover:border-[#F1C086] transition-colors">
+                                <AvatarImage src={activity.companies?.logo_url} className="object-cover" />
+                                <AvatarFallback className="text-2xl font-bold bg-[#1A1A1A] text-[#F1C086]">
+                                    {activity.companies?.name?.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col pr-2">
+                                <h2 className="text-2xl font-bold text-white group-hover:text-[#F1C086] transition-colors">
+                                    {activity.companies?.name}
+                                </h2>
+                                <Badge variant="secondary" className="mt-1.5 bg-white/5 text-gray-400 group-hover:text-[#F1C086] group-hover:bg-[#F1C086]/10 w-fit rounded-md font-normal text-xs transition-colors border border-white/5 group-hover:border-[#F1C086]/20">
+                                    {activity.companies?.sector || "Technology"}
+                                </Badge>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="w-full space-y-6">
+                {/* Primary Insight Card */}
+                <Card className="bg-[#0E0E10]/50 backdrop-blur-xl border-white/10 shadow-2xl relative overflow-hidden group w-full">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#F1C086]/5 via-transparent to-transparent opacity-50" />
 
-                {/* Main Content Column */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Primary Insight Card */}
-                    <Card className="bg-[#0E0E10]/50 backdrop-blur-xl border-white/10 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#F1C086]/5 via-transparent to-transparent opacity-50" />
+                    <CardHeader className="relative">
+                        <div className="bg-[#05060A] px-4 py-3 rounded-xl inline-flex items-center gap-2 border border-white/5 mb-4 shadow-lg w-fit">
+                            <Sparkles className="w-5 h-5 text-[#8B8CFF]" />
+                            <span className="font-extrabold tracking-wider text-sm uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3]">
+                                AI Analysis
+                            </span>
+                        </div>
+                        <CardTitle className="text-xl text-white font-light leading-relaxed">
+                            Understanding the impact
+                        </CardTitle>
+                    </CardHeader>
 
-                        <CardHeader className="relative">
-                            <div className="bg-[#05060A] px-4 py-3 rounded-xl inline-flex items-center gap-2 border border-white/5 mb-4 shadow-lg w-fit">
-                                <Sparkles className="w-5 h-5 text-[#8B8CFF]" />
-                                <span className="font-extrabold tracking-wider text-sm uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3]">
-                                    AI Analysis
+                    <CardContent className="relative space-y-6">
+                        {(() => {
+                            let parsed = null;
+                            const text = typeof activity.ai_analysis === 'string' ? activity.ai_analysis : "";
+
+                            try {
+                                // 1. Attempt JSON Parse
+                                if (text.trim().startsWith('{')) {
+                                    parsed = JSON.parse(text);
+                                }
+                            } catch (e) {
+                                // Not JSON
+                            }
+
+                            // 2. If no JSON parsed, try Regex extraction for formatted strings
+                            if (!parsed && text) {
+                                // Regex to capture sections based on emojis (using [\s\S] for multi-line matching)
+                                const reasoningMatch = text.match(/(?:📊 ANALYSE\s*:)?\s*([\s\S]*?)(?=\s*🌍 IMPACT MARCHÉ|$)/);
+                                const impactMatch = text.match(/🌍 IMPACT MARCHÉ\s*:\s*([\s\S]*?)(?=\s*🔍 PREUVES|$)/);
+                                const evidenceMatch = text.match(/🔍 PREUVES\s*(?:\(Diff\))?\s*:\s*([\s\S]*)/);
+
+                                let evidenceObj = null;
+                                if (evidenceMatch) {
+                                    const evText = evidenceMatch[1];
+                                    const oldMatch = evText.match(/🔴 Avant\s*:\s*([\s\S]*?)(?=\s*🟢 Après|$)/);
+                                    const newMatch = evText.match(/🟢 Après\s*:\s*([\s\S]*)/);
+                                    evidenceObj = {
+                                        old: oldMatch ? oldMatch[1].trim() : null,
+                                        new: newMatch ? newMatch[1].trim() : null
+                                    };
+                                }
+
+                                parsed = {
+                                    reasoning: reasoningMatch ? reasoningMatch[1].trim() : text,
+                                    market_implication: impactMatch ? impactMatch[1].trim() : null,
+                                    evidence: evidenceObj
+                                };
+                            }
+
+                            // 3. Render
+                            if (parsed) {
+                                return (
+                                    <div className="space-y-4">
+                                        {/* Reasoning Card */}
+                                        <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-lg text-gray-200 leading-relaxed font-light">
+                                            <h4 className="text-[#F1C086] font-semibold text-sm uppercase tracking-wider mb-2">Analysis & Reasoning</h4>
+                                            {parsed.reasoning || "No detailed analysis available."}
+                                        </div>
+
+                                        {/* Market Implication Card */}
+                                        {parsed.market_implication && (
+                                            <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-lg text-gray-200 leading-relaxed font-light">
+                                                <h4 className="text-[#8B8CFF] font-semibold text-sm uppercase tracking-wider mb-2">Market Implication</h4>
+                                                {parsed.market_implication}
+                                            </div>
+                                        )}
+
+                                        {/* Evidence Grid (Before / After) */}
+                                        {parsed.evidence && (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200">
+                                                    <h4 className="text-red-400 font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-red-500" />
+                                                        Before
+                                                    </h4>
+                                                    <p className="font-mono text-sm">{parsed.evidence.old || "N/A"}</p>
+                                                </div>
+                                                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-200">
+                                                    <h4 className="text-emerald-400 font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                                        After
+                                                    </h4>
+                                                    <p className="font-mono text-sm">{parsed.evidence.new || "N/A"}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            }
+
+                            // Fallback for completely empty content
+                            return (
+                                <div className="space-y-4">
+                                    <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-lg text-gray-200 leading-relaxed font-light">
+                                        <h4 className="text-[#F1C086] font-semibold text-sm uppercase tracking-wider mb-2">Analysis & Reasoning</h4>
+                                        {activity.ai_analysis || "Our AI detected this change but hasn't generated a deep analysis yet. This usually indicates a standard operational update."}
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-xl bg-black/20 border border-white/5">
+                                <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Change Type</span>
+                                <span className="text-white font-medium capitalize flex items-center gap-2">
+                                    <ActivityIcon className="w-4 h-4 text-emerald-500" />
+                                    {activity.change_type.replace(/_/g, ' ').toLowerCase()}
                                 </span>
                             </div>
-                            <CardTitle className="text-xl text-white font-light leading-relaxed">
-                                Understanding the impact
-                            </CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="relative space-y-6">
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/5 text-lg text-gray-200 leading-relaxed font-light">
-                                {activity.ai_analysis || "Our AI detected this change but hasn't generated a deep analysis yet. This usually indicates a standard operational update."}
+                            <div className="p-4 rounded-xl bg-black/20 border border-white/5">
+                                <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Detection Source</span>
+                                <span className="text-white font-medium capitalize flex items-center gap-2">
+                                    <Globe className="w-4 h-4 text-blue-500" />
+                                    Automated Monitor
+                                </span>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="p-4 rounded-xl bg-black/20 border border-white/5">
-                                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Change Type</span>
-                                    <span className="text-white font-medium capitalize flex items-center gap-2">
-                                        <ActivityIcon className="w-4 h-4 text-emerald-500" />
-                                        {activity.change_type.replace(/_/g, ' ').toLowerCase()}
-                                    </span>
-                                </div>
-                                <div className="p-4 rounded-xl bg-black/20 border border-white/5">
-                                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-1">Detection Source</span>
-                                    <span className="text-white font-medium capitalize flex items-center gap-2">
-                                        <Globe className="w-4 h-4 text-blue-500" />
-                                        Automated Monitor
-                                    </span>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Sidebar Column */}
-                <div className="space-y-6">
-                    {/* Entity Card */}
-                    <Card className="bg-[#0E0E10] border-white/10 h-full">
-                        <CardHeader className="pb-4 border-b border-white/5">
-                            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                <Building className="w-4 h-4" />
-                                Affected Entity
-                            </h3>
-                        </CardHeader>
-                        <CardContent className="pt-6 space-y-6">
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg ring-2 ring-[#F1C086]/20">
-                                    <AvatarImage src={activity.companies?.logo_url || "/placeholder-logo.png"} className="object-cover" />
-                                    <AvatarFallback className="text-xl font-bold bg-[#1A1A1A] text-[#F1C086]">
-                                        {activity.companies?.name?.slice(0, 2).toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <Link href={activity.companies?.id ? `/portfolio/${activity.companies.id}` : '#'} className="hover:underline decoration-[#F1C086]/50 underline-offset-4">
-                                        <h2 className="text-xl font-bold text-white">{activity.companies?.name}</h2>
-                                    </Link>
-                                    <Badge variant="secondary" className="mt-1 bg-white/5 text-gray-400 hover:bg-white/10">
-                                        {activity.companies?.sector || "Technology"}
-                                    </Badge>
-                                </div>
-                            </div>
-
-                            {activity.companies?.description && (
-                                <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-white/10 pl-4">
-                                    {activity.companies.description}
-                                </p>
-                            )}
-
-                            <div className="flex flex-col gap-2 pt-2">
-                                {activity.companies?.website_url && (
-                                    <Link
-                                        href={activity.companies.website_url}
-                                        target="_blank"
-                                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-lg bg-black/20 text-gray-400 group-hover:text-emerald-500 transition-colors">
-                                                <Globe className="w-4 h-4" />
-                                            </div>
-                                            <span className="text-sm font-medium text-gray-300 group-hover:text-white">Website</span>
-                                        </div>
-                                        <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-emerald-500" />
-                                    </Link>
-                                )}
-                                <Link
-                                    href={activity.companies?.linkedin_company_url || "#"}
-                                    target="_blank"
-                                    className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-[#0077b5]/10 hover:border-[#0077b5]/30 transition-all group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 rounded-lg bg-black/20 text-gray-400 group-hover:text-[#0077b5] transition-colors">
-                                            <Linkedin className="w-4 h-4" />
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-300 group-hover:text-white">LinkedIn</span>
-                                    </div>
-                                    <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-[#0077b5]" />
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
-        </div>
+        </div >
     )
 }
