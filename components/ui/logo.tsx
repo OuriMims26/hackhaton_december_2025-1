@@ -21,7 +21,7 @@ export function Logo({ className = "", iconOnly = false, href = "/" }: LogoProps
       </div>
 
       {!iconOnly && (
-        <span className="font-bold text-xl tracking-tight text-[#F6B88C]">
+        <span className="font-bold text-2xl pt-2 tracking-tight text-[#F6B88C]">
           OurInvest
         </span>
       )}

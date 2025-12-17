@@ -34,7 +34,7 @@ export default function LandingPage() {
       <main className="flex-1">
 
         {/* B. HERO SECTION */}
-        <section className="relative pt-24 pb-12 text-center px-4 max-w-6xl mx-auto">
+        <section className="relative pt-24 pb-4 text-center px-4 max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-8 leading-tight">
             Welcome to your platform <br />
             <span className="bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3] bg-clip-text text-transparent">
@@ -47,13 +47,14 @@ export default function LandingPage() {
         </section>
 
         {/* CTA 1: Between Hero and Grid */}
-        <div className="flex justify-center pb-12">
-          <Link
-            href="/login?mode=signup"
-            className="group relative px-8 py-4 rounded-full bg-gradient-to-r from-[#F1C086] to-[#e8ab80] text-[#0E0E10] font-bold text-xl shadow-[0_0_20px_rgba(241,192,134,0.3)] transition-all hover:shadow-[0_0_40px_rgba(241,192,134,0.5)] hover:scale-105 flex items-center gap-2"
-          >
-            Get Started
-            <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+        <div className="flex justify-center pb-24">
+          <Link href="/login?mode=signup">
+            <Button
+              size="lg"
+              className="rounded-full px-8 py-6 text-lg font-medium bg-gradient-to-r from-[#F1C086] to-[#F6B88C] text-[#0E0E10] hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(241,192,134,0.3)]"
+            >
+              Get Started <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </Link>
         </div>
 
