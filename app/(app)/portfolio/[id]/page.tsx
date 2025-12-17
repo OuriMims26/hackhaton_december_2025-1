@@ -1,6 +1,7 @@
 "use client"
 
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
+import { LinkedinFeed } from "@/components/dashboard/linkedin-feed"
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase/client"
@@ -225,8 +226,13 @@ export default function CompanyDetailsPage() {
                 </div>
 
                 {/* Unified Activity Feed (Span 3 - Full Width) */}
-                <div className="lg:col-span-3 bg-[#0E0E10] border border-white/10 rounded-2xl p-6 h-[800px]">
+                <div className="lg:col-span-3 bg-[#0E0E10] border border-white/10 rounded-2xl p-6 max-h-[600px] overflow-y-auto">
                     <ActivityFeed companyId={id} showHeader={false} />
+                </div>
+
+                {/* LinkedIn Feed (Span 3 - Full Width) */}
+                <div className="lg:col-span-3 max-h-[700px] overflow-y-auto">
+                    <LinkedinFeed companyId={id} />
                 </div>
 
             </div>
