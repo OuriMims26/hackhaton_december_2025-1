@@ -19,7 +19,7 @@ export default function LandingPage() {
           <div className="transform scale-150 origin-left">
             <Logo iconOnly={true} />
           </div>
-          <span className="text-5xl font-bold bg-gradient-to-r from-[#8B8CFF] to-[#F6D9A3] bg-clip-text text-transparent hidden md:block">
+          <span className="text-5xl font-bold bg-[#F6B88C] bg-clip-text text-transparent hidden md:block">
             OurInvest
           </span>
         </div>
