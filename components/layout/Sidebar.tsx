@@ -33,11 +33,11 @@ const items = [
         url: "/activities",
         icon: Activity,
     },
-    {
-        title: "Settings",
-        url: "/#settings",
-        icon: Settings,
-    },
+    // {
+    //     title: "Settings",
+    //     url: "/dashboard",
+    //     icon: Settings,
+    // },
 ]
 
 export function AppSidebar() {
