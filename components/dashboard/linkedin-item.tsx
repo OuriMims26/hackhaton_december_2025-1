@@ -12,9 +12,13 @@ interface LinkedinItemProps {
         shares: number
     }
     sentiment?: string
+    author?: {
+        name: string
+        role: string
+    }
 }
 
-export function LinkedinItem({ id, content, date, url, metrics, sentiment }: LinkedinItemProps) {
+export function LinkedinItem({ id, content, date, url, metrics, sentiment, author }: LinkedinItemProps) {
 
     const getSentimentColor = (sentiment?: string) => {
         switch (sentiment?.toLowerCase()) {
@@ -35,7 +39,11 @@ export function LinkedinItem({ id, content, date, url, metrics, sentiment }: Lin
                         <Linkedin className="w-4 h-4 text-[#0077b5]" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-sm text-gray-400">{date}</span>
+                        <div className="flex items-center gap-2">
+                            {author && <span className="text-sm font-medium text-white">{author.name}</span>}
+                            <span className="text-sm text-gray-400">• {date}</span>
+                        </div>
+                        {author && <span className="text-xs text-gray-500">{author.role}</span>}
                     </div>
                 </div>
                 {sentiment && (

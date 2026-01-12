@@ -22,6 +22,10 @@ interface LinkedinPost {
     comments_count: number
     shares_count: number
     sentiment: string
+    team_members: {
+        name: string
+        role: string
+    }
 }
 
 interface LinkedinFeedProps {
@@ -51,7 +55,7 @@ export function LinkedinFeed({ companyId, showHeader = true }: LinkedinFeedProps
 
             let query = supabase
                 .from('linkedin_posts')
-                .select('*')
+                .select('*, team_members(name, role)')
                 .order('post_date', { ascending: false })
 
             if (companyId) {
@@ -178,6 +182,7 @@ export function LinkedinFeed({ companyId, showHeader = true }: LinkedinFeedProps
                                         shares: post.shares_count
                                     }}
                                     sentiment={post.sentiment}
+                                    author={post.team_members}
                                 />
                             ))
                         )}
