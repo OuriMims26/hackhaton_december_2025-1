@@ -6,8 +6,11 @@ import { ArrowRight, Zap, LineChart, Shield, Users, Instagram, Linkedin, Faceboo
 import { Logo } from "@/components/ui/logo"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useBuildInfo } from "@/hooks/use-build-info"
+import { format } from "date-fns"
 
 export default function LandingPage() {
+  const { buildInfo } = useBuildInfo();
   return (
     <div className="min-h-screen bg-[#0E0E10] flex flex-col font-sans">
       {/* Background Decorations */}
@@ -267,8 +270,15 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-white/40">
-              © 2024 OurInvest. All rights reserved.
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <div className="text-xs text-white/40">
+                © 2024 OurInvest. All rights reserved.
+              </div>
+              {buildInfo && (
+                <div className="text-xs text-white/30">
+                  Last updated: {format(new Date(buildInfo.lastCommit.date), 'PPpp')}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-6">
               <SocialIcon icon={<Instagram className="w-5 h-5" />} />
