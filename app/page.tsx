@@ -274,9 +274,15 @@ export default function LandingPage() {
               <div className="text-xs text-white/40">
                 © 2024 OurInvest. All rights reserved.
               </div>
-              {buildInfo && (
+              {buildInfo && buildInfo.lastCommit.date && (
                 <div className="text-xs text-white/30">
-                  Last updated: {format(new Date(buildInfo.lastCommit.date), 'PPpp')}
+                  Last updated: {(() => {
+                    try {
+                      return format(new Date(buildInfo.lastCommit.date), 'PPpp');
+                    } catch {
+                      return buildInfo.lastCommit.date;
+                    }
+                  })()}
                 </div>
               )}
             </div>

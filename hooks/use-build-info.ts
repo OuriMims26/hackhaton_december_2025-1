@@ -16,7 +16,9 @@ export function useBuildInfo() {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    fetch('/build-info.json')
+    const abortController = new AbortController();
+    
+    fetch('/build-info.json', { signal: abortController.signal })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch build info');
@@ -28,9 +30,17 @@ export function useBuildInfo() {
         setLoading(false);
       })
       .catch(err => {
-        setError(err);
-        setLoading(false);
+        // Ignore abort errors
+        if (err.name !== 'AbortError') {
+          setError(err);
+          setLoading(false);
+        }
       });
+    
+    // Cleanup function to abort the fetch if component unmounts
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   return { buildInfo, loading, error };

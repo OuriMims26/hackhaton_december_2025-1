@@ -9,6 +9,9 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+// Define output path once
+const outputPath = path.join(__dirname, '..', 'public', 'build-info.json');
+
 try {
   // Get the last commit information
   const lastCommitHash = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
@@ -27,7 +30,6 @@ try {
   };
 
   // Write to public directory so it's accessible at runtime
-  const outputPath = path.join(__dirname, '..', 'public', 'build-info.json');
   fs.writeFileSync(outputPath, JSON.stringify(buildInfo, null, 2));
 
   console.log('Build info generated successfully:', outputPath);
@@ -44,7 +46,6 @@ try {
     },
     buildDate: new Date().toISOString(),
   };
-  const outputPath = path.join(__dirname, '..', 'public', 'build-info.json');
   fs.writeFileSync(outputPath, JSON.stringify(fallbackInfo, null, 2));
   console.log('Fallback build info created');
 }
